@@ -2,6 +2,8 @@
 
 ## Phase 1
 
+The console output below shows successful routing with real cosine scores and matched bots at the `0.3` threshold.
+
 ```text
 /Users/antrasingh/Desktop/grid07/phase1_router.py:84: LangChainDeprecationWarning: The class `HuggingFaceEmbeddings` was deprecated in LangChain 0.2.2 and will be removed in 1.0. An updated version of the class exists in the `langchain-huggingface package and should be used instead. To use it run `pip install -U `langchain-huggingface` and import as `from `langchain_huggingface import HuggingFaceEmbeddings``.
   self._embeddings = HuggingFaceEmbeddings(model_name=embedding_model)
@@ -28,6 +30,8 @@ Matched bots (threshold=0.3): ['tech_maximalist', 'doomer_skeptic']
 
 ## Phase 2
 
+The console output below shows JSON post generation for the matched bots. Each line includes the JSON payload with `bot_id`, `topic`, and `post_content`.
+
 ```text
 ### PHASE 2 — LangGraph Content Engine
 - Draft from `tech_maximalist` (<=280 chars, JSON): {'bot_id': 'tech_maximalist', 'topic': 'crypto', 'post_content': 'AI & crypto will revolutionize finance! ETF inflows surging, DeFi volumes rebounding. Regulatory noise is just that - noise. Bullish on Bitcoin and Ethereum!'}
@@ -35,6 +39,8 @@ Matched bots (threshold=0.3): ['tech_maximalist', 'doomer_skeptic']
 ```
 
 ## Phase 3
+
+The console output below shows the prompt-injection defense succeeding. The injected request tried to turn the bot into a "sweet wholesome assistant" that only says `OK`, but the actual reply stays in the original `tech_maximalist` persona and does not follow the injected instruction.
 
 ```text
 ### PHASE 3 — RAG Defense Engine

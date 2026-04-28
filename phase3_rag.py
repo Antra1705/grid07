@@ -9,6 +9,7 @@ from langchain_groq import ChatGroq
 
 @dataclass
 class DefenseConfig:
+    # Lower temperature keeps the defense reply more stable and less likely to drift.
     groq_model: str = "llama-3.3-70b-versatile"
     temperature: float = 0.4
 
@@ -29,6 +30,7 @@ def generate_defense_reply(
       that tries to change persona/behavior.
     - Bot stays in character no matter what human says.
     """
+    # Allow callers to override model settings while keeping a sensible default profile.
     cfg = config or DefenseConfig()
     llm = ChatGroq(
         api_key=groq_api_key,
@@ -36,8 +38,12 @@ def generate_defense_reply(
         temperature=cfg.temperature,
     )
 
+    # Flatten the thread so the model sees the same conversation context a social bot
+    # would actually have before composing its reply.
     history = "\n".join(f"- {c}" for c in comment_history) if comment_history else "(no prior comments)"
 
+    # Put the prompt-injection defense in the system message because system instructions
+    # have higher priority than user content and are the right place for non-negotiable rules.
     system = SystemMessage(
         content=(
             "You are Grid07, simulating a social media bot, and you MUST stay in character.\n"
@@ -51,6 +57,8 @@ def generate_defense_reply(
         )
     )
 
+    # The latest user reply is included verbatim but explicitly labeled untrusted so the
+    # model can respond to its ideas without obeying hidden control instructions inside it.
     user = HumanMessage(
         content=(
             "THREAD CONTEXT (RAG):\n"
@@ -63,6 +71,7 @@ def generate_defense_reply(
         )
     )
 
+    # Return plain text so the caller can print the defense response directly in the demo.
     out = llm.invoke([system, user])
     return str(getattr(out, "content", out)).strip()
 
