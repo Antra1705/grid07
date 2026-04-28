@@ -41,7 +41,9 @@ Implemented in `phase1_router.py`.
 
 Main function:
 
-- `route_post_to_bots(post_content: str, threshold: float = 0.85) -> List[str]`
+- `route_post_to_bots(post_content: str, threshold: float = 0.3) -> List[str]`
+
+The default threshold was lowered from 0.85 to 0.3 because the `sentence-transformers/all-MiniLM-L6-v2` embedding model produces lower raw cosine similarity scores than larger models. A threshold of 0.3 produces accurate and realistic routing results for this embedding model.
 
 ## Phase 2 — LangGraph Content Engine
 
